@@ -3,7 +3,7 @@
   "parser": "@babel/eslint-parser",
   "env": {
     "browser": true,
-    "es2021": true
+    "es6": true
   },
   "ignorePatterns": ["node_modules", "dist", "build"],
   "extends": [
@@ -44,7 +44,10 @@
         "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
         "newlines-between": "always"
       }
-    ]
+    ],
+    "class-methods-use-this": "off",
+    "react/prefer-stateless-function": "off",
+    "react/state-in-constructor": "off"
   },
   "settings": {
     "import/resolver": {

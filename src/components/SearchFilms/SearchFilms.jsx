@@ -1,13 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Input } from 'antd'
+
 import './SearchFilms.css'
 
 function SearchFilms() {
-  return (
-    <div className="">
-      <header className="">
-        <h1>Hello!</h1>
-      </header>
-    </div>
-  )
+  return <Input placeholder="Type to search..." />
 }
 
 export default SearchFilms
