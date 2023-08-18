@@ -16,7 +16,7 @@ function FilmCard({ title, description, date, genre, rating, img }) {
     <Col span={12} className="card">
       <Layout className="layout">
         <Sider className="siderStyle">
-          <img className="film-card__image" src={`https://image.tmdb.org/t/p/original${img}`} alt={title} />
+          <img className="filmCardImage" src={`https://image.tmdb.org/t/p/original${img}`} alt={title} />
         </Sider>
         <Layout>
           <Header className="headerStyle">
