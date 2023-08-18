@@ -1,51 +1,78 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable react/no-unused-class-component-methods */
 import { Component } from 'react'
-import { Row, Col } from 'antd'
+import { Row } from 'antd'
 
-import TMDBService from '../../services/TMDBService'
 import FilmCard from '../FilmCard'
 
 import './FilmsList.css'
 
+const data = [
+  {
+    id: 1,
+    title: 'Return',
+    description: 'Back from a tour of duty, Kelli struggles to find her place',
+    date: '2011-02-10',
+    genre: 'drama',
+    rating: '6.5',
+  },
+  {
+    id: 1,
+    title: 'Return',
+    description: 'Back from a tour of duty, Kelli struggles to find her place',
+    date: '2011-02-10',
+    genre: 'drama',
+    rating: '6.5',
+  },
+  {
+    id: 1,
+    title: 'Return',
+    description: 'Back from a tour of duty, Kelli struggles to find her place',
+    date: '2011-02-10',
+    genre: 'drama',
+    rating: '6.5',
+  },
+  {
+    id: 1,
+    title: 'Return',
+    description: 'Back from a tour of duty, Kelli struggles to find her place',
+    date: '2011-02-10',
+    genre: 'drama',
+    rating: '6.5',
+  },
+  {
+    id: 1,
+    title: 'Return',
+    description: 'Back from a tour of duty, Kelli struggles to find her place',
+    date: '2011-02-10',
+    genre: 'drama',
+    rating: '6.5',
+  },
+  {
+    id: 1,
+    title: 'Return',
+    description: 'Back from a tour of duty, Kelli struggles to find her place',
+    date: '2011-02-10',
+    genre: 'drama',
+    rating: '6.5',
+  },
+]
 class FilmsList extends Component {
-  TMDBService = new TMDBService()
-
-  constructor() {
-    super()
-    this.state = {
-      movies: null,
-    }
-  }
-
-  updateMovies() {
-    this.TMDBService.getMovies('war').then((mov) => {
-      console.log(mov)
-    })
-  }
-
   render() {
     return (
       <div className="filmsListWrapper">
-        <Row className="row" justify="center" gutter={[36, 36]}>
-          <Col span={12}>
-            <FilmCard />
-          </Col>
-          <Col span={12}>
-            <FilmCard />
-          </Col>
-          <Col span={12}>
-            <FilmCard />
-          </Col>
-          <Col span={12}>
-            <FilmCard />
-          </Col>
-          <Col span={12}>
-            <FilmCard />
-          </Col>
-          <Col span={12}>
-            <FilmCard />
-          </Col>
+        <Row className="row" gutter={[0, 32]} justify="space-between">
+          {data.map((item) => (
+            <FilmCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              date={item.date}
+              genre={item.genre}
+              rating={item.rating}
+              img={item.img}
+            />
+          ))}
         </Row>
       </div>
     )

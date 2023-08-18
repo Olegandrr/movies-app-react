@@ -1,22 +1,23 @@
 .card{
-  width: 454px;
+  
+  max-width: 454px;
   height: 281px;
   box-shadow: 0px 4px 12px 0px #00000026;
   border-radius: 0px;
-  padding: 0;
-  margin: 0;
+  background-color: #FFF !important;
+  
 }
 
 .headerStyle {
   display: flex;
   color: black;
-  background-color: #7dbcea;
+  background-color: #FFF !important;
   font-family: Inter UI;
   font-size: 20px;
   line-height: 28px;
   letter-spacing: 0em;
   text-align: left;
-  padding-left: 20px;
+  padding-left: 0px;
   padding-right: 10px;
   justify-content: space-between;
   align-items: center;
@@ -37,26 +38,28 @@
 
 .contentStyle {
   text-align: left;
-  padding-left: 20px;
+  padding: 0px;
   color: #fff;
-  background-color: #108ee9;
+  background-color: #FFF;
+  
 }
 
 .description{
   height: 129px;
-  width: 228px;
+  max-width: 228px;
   color: #000;
-  padding-right: 20px;
+  padding-right: 0px;
   font-family: Inter UI;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px; /* 183.333% */
+  background-color: #FFF;
 }
 
 .genre{
-  width: 44px;
-  height: 18px;
+  width: 46px;
+  height: 20px;
   border-radius: 2px;
   border: 1px solid #D9D9D9;
   background-color: #FAFAFA;
@@ -76,31 +79,33 @@
   font-style: normal;
   font-weight: 400;
   line-height: 22px; 
+  background-color: #FFF !important;
 }
 .siderStyle {
-  text-align: center;
-  line-height: 120px;
-  color: #fff;
-  background-color: transparent !important;
+  background-color: #FFF !important;
   height: 281px;
+  max-width: 183px;
+}
+
+.film-card__image {
+  
+  height: 100%;
   width: 183px;
+  object-fit: contain;
+  
+ 
+  
 }
 
 .footerStyle {
   height: 46px;
-  width: 239px;
+  max-width: 100%;
   text-align: center;
-  color: #fff;
-  background-color: #7dbcea;
+  color: #0e0d0d;
+  background-color: #FFF !important;
   padding: 0;
-  margin-left: auto;
-  margin-right: auto;
   margin-bottom: 2px;
 }
 
-.layout {
-  
-  padding: 0!important;
-  margin: 0 !important;
-}
+
 
