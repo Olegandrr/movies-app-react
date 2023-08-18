@@ -4,16 +4,12 @@ import './FilmCard.css'
 
 const { Header, Footer, Sider, Content } = Layout
 
-function FilmCard({ title, description, date, genre, rating }) {
+function FilmCard({ title, description, date, genre, rating, img }) {
   return (
     <Col span={12} className="card">
       <Layout className="layout">
         <Sider className="siderStyle">
-          <img
-            className="film-card__image"
-            src="https://image.tmdb.org/t/p/original/xAuR564U2njKKcXSbfbq36rZLeA.jpg"
-            alt="Poster"
-          />
+          <img className="film-card__image" src={`https://image.tmdb.org/t/p/original${img}`} alt="Poster" />
         </Sider>
         <Layout>
           <Header className="headerStyle">
