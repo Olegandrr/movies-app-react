@@ -11,8 +11,3 @@ body{
 }
 
 
-.pagination li:active,
-.pagination li:focus {
-  background-color: #1677ff;
-  color:#FFFFFF;
-}

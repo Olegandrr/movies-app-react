@@ -22,11 +22,20 @@
   justify-content: space-between;
   align-items: center;
   height: 45px;
+  
+}
+
+.titleLongStyle{
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0px;
+  font-weight: 500;
+  flex-shrink: 1;
 }
 
 .rating {
   height: 30px;
-  width: 30px;
+  min-width: 30px;
   border-radius: 50%;
   border: 2px solid #E9D100;
   font-family: Inter UI;
@@ -34,12 +43,11 @@
   line-height: 24px;
   letter-spacing: 0px;
   text-align: center;
+  flex-shrink: 1;
 }
 
 .contentStyle {
-  text-align: left;
-  padding: 0px;
-  color: #fff;
+  
   background-color: #FFF;
   
 }
@@ -48,13 +56,13 @@
   height: 129px;
   max-width: 228px;
   color: #000;
-  padding-right: 0px;
   font-family: Inter UI;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
-  line-height: 22px; /* 183.333% */
-  background-color: #FFF;
+  line-height: 22px; 
+  padding-top: 5px;
+  background-color: #FFF !important;
 }
 
 .genre{
@@ -70,6 +78,7 @@
   font-weight: 400;
   line-height: 15px;
   text-align: center;
+ 
 }
 
 .date{
@@ -80,6 +89,7 @@
   font-weight: 400;
   line-height: 22px; 
   background-color: #FFF !important;
+  padding-bottom: 5px;
 }
 .siderStyle {
   background-color: #FFF !important;
@@ -92,17 +102,18 @@
   height: 100%;
   width: 183px;
   object-fit: contain;
+  background-color: #FFF !important;
   
  
   
 }
 
 .footerStyle {
-  height: 46px;
+  min-height: 46px;
   max-width: 100%;
   text-align: center;
   color: #0e0d0d;
-  background-color: #FFF !important;
+  
   padding: 0;
   margin-bottom: 2px;
 }

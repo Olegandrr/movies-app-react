@@ -44,7 +44,7 @@ class App extends Component {
 
         <Row justify="center">
           <Col span={12} offset={4}>
-            <Pagination className="pagination" defaultCurrent={1} total={50} />
+            <Pagination defaultCurrent={1} total={50} />
           </Col>
         </Row>
       </div>

@@ -14,6 +14,7 @@ class SearchFilms extends Component {
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       this.props.onSearch(this.state.query)
+      this.setState({ query: '' })
     }
   }
 
