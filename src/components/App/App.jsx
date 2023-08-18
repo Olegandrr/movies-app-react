@@ -23,7 +23,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('Данные полученные с сервера', this.state)
     return (
       <div className="wrapper">
         <Row justify="center">
