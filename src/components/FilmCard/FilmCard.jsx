@@ -16,11 +16,15 @@ function FilmCard({ title, description, date, genre, rating, img }) {
     <Col span={12} className="card">
       <Layout className="layout">
         <Sider className="siderStyle">
-          <img className="filmCardImage" src={`https://image.tmdb.org/t/p/original${img}`} alt={title} />
+          <img
+            className="filmCardImage"
+            src={img !== null ? `https://image.tmdb.org/t/p/original${img}` : ''}
+            alt={title}
+          />
         </Sider>
         <Layout>
           <Header className="headerStyle">
-            <div className={title.length > 23 && 'titleLongStyle'}>{title}</div>
+            <div className={title.length > 23 ? 'titleLongStyle' : ''}>{title}</div>
             <div className="rating">{rating}</div>
           </Header>
           <Content className="contentStyle">
