@@ -21,7 +21,7 @@ class FilmsList extends Component {
                   key={item.id}
                   title={item.title}
                   description={item.overview}
-                  date={format(new Date(item.release_date), 'MMMM d, yyyy')}
+                  date={item.release_date ? format(new Date(item.release_date), 'MMMM d, yyyy') : 'No release date'}
                   genre="Drama"
                   rating={item.vote_average.toFixed(1)}
                   img={item.poster_path}
