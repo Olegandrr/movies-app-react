@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unused-state */
-/* eslint-disable react/destructuring-assignment */
 import { Component } from 'react'
 import { Spin, Col, Row, Pagination, Alert } from 'antd'
 
@@ -18,14 +17,19 @@ class App extends Component {
     this.state = {
       cards: [],
       loading: true,
+      error: false,
+      currentPage: 1,
+      currentQuery: '',
+      totalResults: 0,
     }
   }
 
   onMoviesLoaded = (data) => {
     this.setState({
       cards: data.results,
-      loading: false,
+      loading: data.total_results === 0,
       error: false,
+      totalResults: data.total_results,
     })
   }
 
@@ -36,16 +40,28 @@ class App extends Component {
     })
   }
 
-  handleSearch = (query) => {
-    this.TMDBService.getMovies(query)
+  handleSearch = (query, page = 1) => {
+    this.setState({
+      currentQuery: query,
+    })
+    this.TMDBService.getMovies(query, page)
       .then((data) => {
         this.onMoviesLoaded(data)
       })
       .catch(this.onError)
   }
 
+  handlePageChange = (page) => {
+    const { currentQuery } = this.state
+    this.setState(() => ({
+      currentPage: page,
+      loading: true,
+    }))
+    this.handleSearch(currentQuery, page)
+  }
+
   render() {
-    const { cards, loading, error } = this.state
+    const { cards, loading, error, totalResults } = this.state
     return (
       <OnlineIndicator>
         <div className="wrapper">
@@ -58,25 +74,31 @@ class App extends Component {
             </Col>
           </Row>
           <Row justify="center">
-            <Col span={24}>
-              <SearchFilms onSearch={this.handleSearch} />
-            </Col>
+            <SearchFilms onSearch={this.handleSearch} />
           </Row>
-          {error && (
-            <Alert
-              className="error"
-              message="The server is not responding, please refresh the page and try again later"
-              type="error"
-            />
-          )}
+          <Row justify="center">
+            {error && (
+              <Alert
+                className="error"
+                message="The server is not responding, please refresh the page and try again later"
+                type="error"
+              />
+            )}
+          </Row>
           <Row justify="center">
             <Spin className="spiner" spinning={loading} size="large" />
           </Row>
           {!loading && <FilmsList cards={cards} />}
           <Row justify="center">
-            <Col span={12} offset={4}>
-              <Pagination defaultCurrent={1} total={50} />
-            </Col>
+            {totalResults > 0 && (
+              <Pagination
+                defaultCurrent={1}
+                total={totalResults}
+                onChange={this.handlePageChange}
+                defaultPageSize={20}
+                showSizeChanger={false}
+              />
+            )}
           </Row>
         </div>
       </OnlineIndicator>

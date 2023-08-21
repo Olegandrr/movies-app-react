@@ -14,20 +14,17 @@ class FilmsList extends Component {
     return (
       <div className="filmsListWrapper">
         <Row className="row" gutter={[0, 32]} justify="space-between">
-          {cards.map(
-            (item, index) =>
-              index < 6 && (
-                <FilmCard
-                  key={item.id}
-                  title={item.title}
-                  description={item.overview}
-                  date={item.release_date ? format(new Date(item.release_date), 'MMMM d, yyyy') : 'No release date'}
-                  genre="Drama"
-                  rating={item.vote_average.toFixed(1)}
-                  img={item.poster_path}
-                />
-              )
-          )}
+          {cards.map((item) => (
+            <FilmCard
+              key={item.id}
+              title={item.title}
+              description={item.overview}
+              date={item.release_date ? format(new Date(item.release_date), 'MMMM d, yyyy') : 'No release date'}
+              genre="Drama"
+              rating={item.vote_average.toFixed(1)}
+              img={item.poster_path}
+            />
+          ))}
         </Row>
       </div>
     )

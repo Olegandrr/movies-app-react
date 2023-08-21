@@ -3,6 +3,7 @@ body {
 }
 
 .wrapper {
+  position: relative;
   width: 938px;
   margin: 0 auto;
   background: #ffffff;
