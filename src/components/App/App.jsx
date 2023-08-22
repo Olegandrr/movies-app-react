@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable react/no-unused-state */
 import { Component } from 'react'
 import { Spin, Col, Row, Pagination, Alert } from 'antd'
@@ -25,12 +26,16 @@ class App extends Component {
   }
 
   onMoviesLoaded = (data) => {
-    this.setState({
-      cards: data.results,
-      loading: data.total_results === 0,
-      error: false,
-      totalResults: data.total_results,
-    })
+    if (data.total_results === 0) {
+      alert('Поиск не дал результатов')
+    } else {
+      this.setState({
+        cards: data.results,
+        loading: data.total_results === 0,
+        error: false,
+        totalResults: data.total_results,
+      })
+    }
   }
 
   onError = () => {
@@ -62,6 +67,7 @@ class App extends Component {
 
   render() {
     const { cards, loading, error, totalResults } = this.state
+
     return (
       <OnlineIndicator>
         <div className="wrapper">

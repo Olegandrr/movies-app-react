@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Input } from 'antd'
 import { Component } from 'react'
+import debounce from 'lodash/debounce'
 
 import './SearchFilms.css'
 
@@ -11,12 +12,9 @@ class SearchFilms extends Component {
     this.state = { query: '' }
   }
 
-  handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      this.props.onSearch(this.state.query)
-      this.setState({ query: '' })
-    }
-  }
+  handleKeyPress = debounce(() => {
+    this.props.onSearch(this.state.query)
+  }, 1500)
 
   handleInputChange = (event) => {
     this.setState({ query: event.target.value })
