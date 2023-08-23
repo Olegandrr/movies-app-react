@@ -18,6 +18,10 @@ body {
 }
 
 .error {
-  color: blue;
-  font-weight: 700;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.results {
+  display: none;
 }

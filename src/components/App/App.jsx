@@ -13,27 +13,31 @@ import TMDBService from '../../services/TMDBService'
 class App extends Component {
   TMDBService = new TMDBService()
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      cards: [],
-      loading: true,
-      error: false,
-      currentPage: 1,
-      currentQuery: '',
-      totalResults: 0,
-    }
+  state = {
+    cards: [],
+    loading: false,
+    error: false,
+    currentPage: 1,
+    currentQuery: '',
+    totalResults: 0,
+    noResults: false,
   }
 
   onMoviesLoaded = (data) => {
     if (data.total_results === 0) {
-      alert('Поиск не дал результатов')
+      this.setState({
+        cards: [],
+        noResults: true,
+        loading: false,
+        totalResults: 0,
+      })
     } else {
       this.setState({
         cards: data.results,
-        loading: data.total_results === 0,
+        loading: false,
         error: false,
         totalResults: data.total_results,
+        noResults: false,
       })
     }
   }
@@ -46,14 +50,18 @@ class App extends Component {
   }
 
   handleSearch = (query, page = 1) => {
-    this.setState({
-      currentQuery: query,
-    })
-    this.TMDBService.getMovies(query, page)
-      .then((data) => {
-        this.onMoviesLoaded(data)
+    if (query.trim().length !== 0) {
+      this.setState({
+        currentQuery: query,
+        loading: true,
+        noResults: false,
       })
-      .catch(this.onError)
+      this.TMDBService.getMovies(query, page)
+        .then((data) => {
+          this.onMoviesLoaded(data)
+        })
+        .catch(this.onError)
+    }
   }
 
   handlePageChange = (page) => {
@@ -66,8 +74,7 @@ class App extends Component {
   }
 
   render() {
-    const { cards, loading, error, totalResults } = this.state
-
+    const { cards, loading, error, totalResults, noResults } = this.state
     return (
       <OnlineIndicator>
         <div className="wrapper">
@@ -83,10 +90,18 @@ class App extends Component {
             <SearchFilms onSearch={this.handleSearch} />
           </Row>
           <Row justify="center">
+            <Alert
+              className={noResults ? 'error' : 'results'}
+              message="Поиск не дал результатов"
+              type="info"
+              showIcon
+            />
+          </Row>
+          <Row justify="center">
             {error && (
               <Alert
                 className="error"
-                message="The server is not responding, please refresh the page and try again later"
+                message="Сервер не отвечает, обновите страницу и повторите попытку"
                 type="error"
               />
             )}

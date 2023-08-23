@@ -34,9 +34,7 @@ class OnlineIndicator extends Component {
     const { children } = this.props
 
     return (
-      <div>
-        {isConnected ? children : <Alert className="offline" message="There is no internet connection" type="error" />}
-      </div>
+      <div>{isConnected ? children : <Alert className="offline" message="Нет подключения к сети" type="error" />}</div>
     )
   }
 }
