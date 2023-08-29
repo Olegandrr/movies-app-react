@@ -1,12 +1,12 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/no-unused-state */
 import { Component } from 'react'
-import { Spin, Col, Row, Pagination, Alert } from 'antd'
+import { Spin, Row, Pagination, Alert } from 'antd'
 
 import './App.css'
 import FilmsList from '../FilmsList'
 import SearchFilms from '../SearchFilms'
-import RatedFilter from '../RatedFilter'
+// import RatedFilter from '../RatedFilter'
 import OnlineIndicator from '../OnlineIndicator'
 import TMDBService from '../../services/TMDBService'
 
@@ -21,6 +21,14 @@ class App extends Component {
     currentQuery: '',
     totalResults: 0,
     noResults: false,
+    guestSessionId: '',
+    isRated: false,
+  }
+
+  componentDidMount() {
+    this.TMDBService.createGuestSession()
+      .then((gSess) => this.setState({ guestSessionId: gSess }))
+      .catch((error) => console.log(error))
   }
 
   onMoviesLoaded = (data) => {
@@ -73,22 +81,43 @@ class App extends Component {
     this.handleSearch(currentQuery, page)
   }
 
+  handleClickRated = (e) => {
+    if (e.target.name === 'Rated') {
+      this.setState({
+        isRated: true,
+      })
+    } else {
+      this.setState({
+        isRated: false,
+      })
+    }
+  }
+
   render() {
-    const { cards, loading, error, totalResults, noResults } = this.state
+    const { cards, loading, error, totalResults, noResults, guestSessionId, isRated } = this.state
     return (
       <OnlineIndicator>
         <div className="wrapper">
           <Row justify="center">
-            <Col span={2} offset={1}>
-              <p>Search</p>
-            </Col>
-            <Col span={2}>
-              <RatedFilter />
-            </Col>
+            <button
+              className={!isRated ? 'button-tab button-tab__selected' : 'button-tab'}
+              type="button"
+              onClick={this.handleClickRated}
+              name="Search"
+            >
+              Search
+            </button>
+
+            <button
+              className={isRated ? 'button-tab button-tab__selected' : 'button-tab'}
+              type="button"
+              onClick={this.handleClickRated}
+              name="Rated"
+            >
+              Rated
+            </button>
           </Row>
-          <Row justify="center">
-            <SearchFilms onSearch={this.handleSearch} />
-          </Row>
+          <Row justify="center">{!isRated && <SearchFilms onSearch={this.handleSearch} />}</Row>
           <Row justify="center">
             <Alert
               className={noResults ? 'error' : 'results'}
@@ -109,9 +138,11 @@ class App extends Component {
           <Row justify="center">
             <Spin className="spiner" spinning={loading} size="large" />
           </Row>
-          {!loading && <FilmsList cards={cards} />}
+          {!loading && totalResults > 0 && (
+            <FilmsList cards={cards} guestSessionId={guestSessionId} isRated={isRated} />
+          )}
           <Row justify="center">
-            {totalResults > 0 && (
+            {totalResults > 0 && !isRated && (
               <Pagination
                 defaultCurrent={1}
                 total={totalResults}

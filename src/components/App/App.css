@@ -11,6 +11,32 @@ body {
   padding: 18px 36px 18px 36px;
 }
 
+.button-tab {
+  border: none;
+  border-bottom: 2px solid #f0e9e9;
+  background-color: inherit;
+  font-family: Inter UI;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0px;
+  text-align: center;
+  width: 65px;
+  height: 22px;
+  color: #000000A6;
+  cursor: pointer;
+  transition: border 0.3s ease-in-out, color 0.4s ease-in-out;
+  margin-bottom: 16px;
+  padding-bottom: 32px;
+}
+
+
+
+.button-tab__selected {
+  color: #1890FF;
+  border-bottom: 2px solid  #1890FF;
+}
+
+
 .spiner {
   margin: 20px 0;
   background: #f7f7f7;

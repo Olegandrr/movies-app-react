@@ -9,7 +9,7 @@ import './SearchFilms.css'
 class SearchFilms extends Component {
   constructor(props) {
     super(props)
-    this.state = { query: '' }
+    this.state = { query: 'Афоня' }
   }
 
   handleKeyPress = debounce(() => {

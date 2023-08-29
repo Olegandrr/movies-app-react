@@ -101,9 +101,8 @@
 .footerStyle {
   min-height: 46px;
   max-width: 100%;
-  text-align: center;
-  color: #0e0d0d;
-
+  text-align: left;
+  background-color: #fff;
   padding: 0;
   margin-bottom: 2px;
 }
