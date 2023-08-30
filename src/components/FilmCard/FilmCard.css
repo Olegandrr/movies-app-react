@@ -106,3 +106,7 @@
   padding: 0;
   margin-bottom: 2px;
 }
+
+.star__size {
+  font-size: 15px;
+}

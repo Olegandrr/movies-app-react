@@ -1,7 +1,5 @@
-import { Layout, Col } from 'antd'
+import { Layout, Col, Rate } from 'antd'
 import { Component } from 'react'
-
-import StarRating from '../StarRating'
 
 import './FilmCard.css'
 
@@ -27,14 +25,18 @@ class FilmCard extends Component {
   }
 
   render() {
-    const { title, date, genre, rating, img, guestSessionId, stars, id } = this.props
+    const { title, date, genre, rating, img, stars, handelChangeStars } = this.props
     return (
       <Col span={12} className="card">
         <Layout className="layout">
           <Sider className="siderStyle">
             <img
               className="filmCardImage"
-              src={img !== null ? `https://image.tmdb.org/t/p/original${img}` : ''}
+              src={
+                img !== null
+                  ? `https://image.tmdb.org/t/p/original${img}`
+                  : 'https://gdr.one/simg/183x281/5094bd/fff?text=No_image'
+              }
               alt={title}
             />
           </Sider>
@@ -51,7 +53,14 @@ class FilmCard extends Component {
               <div className="description">{this.cropDescription()}</div>
             </Content>
             <Footer className="footerStyle">
-              <StarRating guestSessionId={guestSessionId} stars={stars} id={id} />
+              <Rate
+                className="star__size "
+                count={10}
+                allowHalf
+                onChange={handelChangeStars}
+                value={stars}
+                allowClear={false}
+              />
             </Footer>
           </Layout>
         </Layout>

@@ -21,6 +21,7 @@ export default class TMDBService {
   }
 
   async createGuestSession() {
+    console.log('создание гостевой сессии')
     try {
       const res = await fetch(
         'https://api.themoviedb.org/3/authentication/guest_session/new?api_key=a58e6c9fc0e73efac9c700fd5116fa5b'
@@ -56,15 +57,15 @@ export default class TMDBService {
     return body
   }
 
-  async getRating(sessionId) {
-    console.log('вызов гетрейтинг: ', sessionId)
+  async getRating(sessionId, page) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=a58e6c9fc0e73efac9c700fd5116fa5b`
+      `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=a58e6c9fc0e73efac9c700fd5116fa5b&page=${page}`
     )
     if (!res.ok) {
       throw new Error('сервер не ответил: ', res)
     }
     const body = await res.json()
-    return body.results
+
+    return body
   }
 }

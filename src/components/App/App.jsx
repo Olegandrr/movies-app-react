@@ -18,17 +18,37 @@ class App extends Component {
     loading: false,
     error: false,
     currentPage: 1,
+    prevPage: 1,
     currentQuery: '',
     totalResults: 0,
     noResults: false,
     guestSessionId: '',
     isRated: false,
+    ratedFilms: new Map(),
   }
 
   componentDidMount() {
+    console.log('didMount')
     this.TMDBService.createGuestSession()
       .then((gSess) => this.setState({ guestSessionId: gSess }))
       .catch((error) => console.log(error))
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { isRated, prevPage } = this.state
+    if (prevState.isRated !== isRated) {
+      if (isRated) {
+        console.log(prevState.currentPage)
+        this.setState(() => ({
+          currentPage: 1,
+          prevPage: prevState.currentPage,
+        }))
+      } else if (!isRated) {
+        this.setState(() => ({
+          currentPage: prevPage,
+        }))
+      }
+    }
   }
 
   onMoviesLoaded = (data) => {
@@ -46,6 +66,7 @@ class App extends Component {
         error: false,
         totalResults: data.total_results,
         noResults: false,
+        currentPage: data.page,
       })
     }
   }
@@ -58,12 +79,14 @@ class App extends Component {
   }
 
   handleSearch = (query, page = 1) => {
+    console.log(this.state.currentPage, this.state.prevPage, page)
     if (query.trim().length !== 0) {
-      this.setState({
+      this.setState(() => ({
+        prevPage: page,
         currentQuery: query,
         loading: true,
         noResults: false,
-      })
+      }))
       this.TMDBService.getMovies(query, page)
         .then((data) => {
           this.onMoviesLoaded(data)
@@ -73,28 +96,48 @@ class App extends Component {
   }
 
   handlePageChange = (page) => {
-    const { currentQuery } = this.state
+    const { currentQuery, isRated } = this.state
     this.setState(() => ({
       currentPage: page,
       loading: true,
     }))
-    this.handleSearch(currentQuery, page)
+    if (isRated) {
+      this.handleClickRated(null, page)
+    } else this.handleSearch(currentQuery, page)
   }
 
-  handleClickRated = (e) => {
-    if (e.target.name === 'Rated') {
+  handleClickRated = (e, page = 1) => {
+    const { guestSessionId, currentQuery, prevPage } = this.state
+    if (e !== null && e.target.name === 'Search') {
+      this.setState(() => ({
+        isRated: false,
+        currentPage: prevPage,
+      }))
+      this.handleSearch(currentQuery, prevPage)
+    } else {
       this.setState({
         isRated: true,
       })
-    } else {
-      this.setState({
-        isRated: false,
-      })
+      this.TMDBService.getRating(guestSessionId, page).then((res) => this.onMoviesLoaded(res))
     }
   }
 
+  handelChangeStars = (star, id) => {
+    const { guestSessionId } = this.state
+    this.TMDBService.addRating(id, guestSessionId, star)
+      .then(() => {
+        this.setState(({ ratedFilms }) => ({
+          ratedFilms: new Map(ratedFilms.set(id, star)),
+        }))
+      })
+      .catch((error) => {
+        console.log('Оценить не получилось', error)
+      })
+  }
+
   render() {
-    const { cards, loading, error, totalResults, noResults, guestSessionId, isRated } = this.state
+    const { cards, loading, error, totalResults, noResults, guestSessionId, isRated, ratedFilms, currentPage } =
+      this.state
     return (
       <OnlineIndicator>
         <div className="wrapper">
@@ -139,12 +182,18 @@ class App extends Component {
             <Spin className="spiner" spinning={loading} size="large" />
           </Row>
           {!loading && totalResults > 0 && (
-            <FilmsList cards={cards} guestSessionId={guestSessionId} isRated={isRated} />
+            <FilmsList
+              cards={cards}
+              guestSessionId={guestSessionId}
+              isRated={isRated}
+              handelChangeStars={this.handelChangeStars}
+              ratedFilms={ratedFilms}
+            />
           )}
           <Row justify="center">
-            {totalResults > 0 && !isRated && (
+            {totalResults > 0 && (
               <Pagination
-                defaultCurrent={1}
+                defaultCurrent={currentPage}
                 total={totalResults}
                 onChange={this.handlePageChange}
                 defaultPageSize={20}
