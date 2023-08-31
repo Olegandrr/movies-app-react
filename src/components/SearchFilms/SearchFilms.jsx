@@ -1,5 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Input } from 'antd'
 import { Component } from 'react'
 import debounce from 'lodash/debounce'
@@ -7,13 +5,12 @@ import debounce from 'lodash/debounce'
 import './SearchFilms.css'
 
 class SearchFilms extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { query: '' }
-  }
+  state = { query: '' }
 
   handleKeyPress = debounce(() => {
-    this.props.onSearch(this.state.query)
+    const { handleSearch } = this.props
+    const { query } = this.state
+    handleSearch(query, 1)
   }, 1500)
 
   handleInputChange = (event) => {
@@ -21,11 +18,12 @@ class SearchFilms extends Component {
   }
 
   render() {
+    const { query } = this.state
     return (
       <Input
         placeholder="Type to search..."
         type="text"
-        value={this.state.query}
+        value={query}
         onChange={this.handleInputChange}
         onKeyDown={this.handleKeyPress}
       />

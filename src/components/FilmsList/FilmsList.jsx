@@ -11,7 +11,7 @@ import './FilmsList.css'
 class FilmsList extends Component {
   render() {
     const { cards, guestSessionId, handelChangeStars, ratedFilms } = this.props
-    console.log(this.props)
+    // console.log(this.props)
     return (
       <div className="filmsListWrapper">
         <Row className="row" gutter={[0, 32]} justify="space-between">

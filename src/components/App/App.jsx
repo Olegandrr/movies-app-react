@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-alert */
 /* eslint-disable react/no-unused-state */
 import { Component } from 'react'
@@ -6,7 +7,6 @@ import { Spin, Row, Pagination, Alert } from 'antd'
 import './App.css'
 import FilmsList from '../FilmsList'
 import SearchFilms from '../SearchFilms'
-// import RatedFilter from '../RatedFilter'
 import OnlineIndicator from '../OnlineIndicator'
 import TMDBService from '../../services/TMDBService'
 
@@ -17,7 +17,7 @@ class App extends Component {
     cards: [],
     loading: false,
     error: false,
-    currentPage: 1,
+    currentPage: 0,
     prevPage: 1,
     currentQuery: '',
     totalResults: 0,
@@ -34,15 +34,11 @@ class App extends Component {
       .catch((error) => console.log(error))
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { isRated, prevPage } = this.state
+  componentDidUpdate(_prevProps, prevState) {
+    const { isRated, prevPage, currentPage } = this.state
     if (prevState.isRated !== isRated) {
       if (isRated) {
-        console.log(prevState.currentPage)
-        this.setState(() => ({
-          currentPage: 1,
-          prevPage: prevState.currentPage,
-        }))
+        this.getRatedFilmsFromApi(currentPage)
       } else if (!isRated) {
         this.setState(() => ({
           currentPage: prevPage,
@@ -52,34 +48,34 @@ class App extends Component {
   }
 
   onMoviesLoaded = (data) => {
-    if (data.total_results === 0) {
-      this.setState({
+    const { total_results, results, page } = data
+    if (total_results === 0) {
+      this.setState(() => ({
         cards: [],
         noResults: true,
         loading: false,
         totalResults: 0,
-      })
+      }))
     } else {
-      this.setState({
-        cards: data.results,
+      this.setState(() => ({
+        cards: results,
         loading: false,
         error: false,
-        totalResults: data.total_results,
+        totalResults: total_results,
         noResults: false,
-        currentPage: data.page,
-      })
+        currentPage: page,
+      }))
     }
   }
 
   onError = () => {
-    this.setState({
+    this.setState(() => ({
       error: true,
       loading: false,
-    })
+    }))
   }
 
   handleSearch = (query, page = 1) => {
-    console.log(this.state.currentPage, this.state.prevPage, page)
     if (query.trim().length !== 0) {
       this.setState(() => ({
         prevPage: page,
@@ -102,24 +98,31 @@ class App extends Component {
       loading: true,
     }))
     if (isRated) {
-      this.handleClickRated(null, page)
+      this.getRatedFilmsFromApi(page)
     } else this.handleSearch(currentQuery, page)
   }
 
-  handleClickRated = (e, page = 1) => {
-    const { guestSessionId, currentQuery, prevPage } = this.state
-    if (e !== null && e.target.name === 'Search') {
+  handleClickRated = (e) => {
+    const { currentQuery, prevPage } = this.state
+    const { name } = e.target
+    if (name === 'Search') {
       this.setState(() => ({
         isRated: false,
         currentPage: prevPage,
+        noResults: false,
       }))
       this.handleSearch(currentQuery, prevPage)
-    } else {
-      this.setState({
+    } else if (name === 'Rated') {
+      this.setState(() => ({
         isRated: true,
-      })
-      this.TMDBService.getRating(guestSessionId, page).then((res) => this.onMoviesLoaded(res))
+        currentPage: 1,
+      }))
     }
+  }
+
+  getRatedFilmsFromApi = (page) => {
+    const { guestSessionId } = this.state
+    this.TMDBService.getRating(guestSessionId, page).then((res) => this.onMoviesLoaded(res))
   }
 
   handelChangeStars = (star, id) => {
@@ -160,7 +163,7 @@ class App extends Component {
               Rated
             </button>
           </Row>
-          <Row justify="center">{!isRated && <SearchFilms onSearch={this.handleSearch} />}</Row>
+          <Row justify="center">{!isRated && <SearchFilms handleSearch={this.handleSearch} />}</Row>
           <Row justify="center">
             <Alert
               className={noResults ? 'error' : 'results'}
@@ -191,15 +194,16 @@ class App extends Component {
             />
           )}
           <Row justify="center">
-            {totalResults > 0 && (
+            {totalResults > 0 && !loading ? (
               <Pagination
+                current={currentPage}
                 defaultCurrent={currentPage}
                 total={totalResults}
                 onChange={this.handlePageChange}
                 defaultPageSize={20}
                 showSizeChanger={false}
               />
-            )}
+            ) : null}
           </Row>
         </div>
       </OnlineIndicator>
