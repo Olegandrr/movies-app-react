@@ -4,7 +4,7 @@ body {
 
 .wrapper {
   position: relative;
-  width: 938px;
+  max-width: 938px;
   margin: 0 auto;
   background: #ffffff;
   box-shadow: 0px 10px 12px 0px #dddbdb26;
@@ -20,22 +20,21 @@ body {
   line-height: 22px;
   letter-spacing: 0px;
   text-align: center;
-  width: 65px;
+  max-width: 65px;
   height: 22px;
-  color: #000000A6;
+  color: #000000a6;
   cursor: pointer;
-  transition: border 0.3s ease-in-out, color 0.4s ease-in-out;
+  transition:
+    border 0.3s ease-in-out,
+    color 0.4s ease-in-out;
   margin-bottom: 16px;
   padding-bottom: 32px;
 }
 
-
-
 .button-tab__selected {
-  color: #1890FF;
-  border-bottom: 2px solid  #1890FF;
+  color: #1890ff;
+  border-bottom: 2px solid #1890ff;
 }
-
 
 .spiner {
   margin: 20px 0;

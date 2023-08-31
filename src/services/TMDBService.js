@@ -21,19 +21,26 @@ export default class TMDBService {
   }
 
   async createGuestSession() {
-    console.log('создание гостевой сессии')
-    try {
-      const res = await fetch(
-        'https://api.themoviedb.org/3/authentication/guest_session/new?api_key=a58e6c9fc0e73efac9c700fd5116fa5b'
-      )
-      if (!res.ok) {
-        throw new Error('сервер не ответил: ', res.status)
-      }
-      const body = await res.json()
-      return body.guest_session_id
-    } catch {
-      return new Error()
+    const res = await fetch(
+      'https://api.themoviedb.org/3/authentication/guest_session/new?api_key=a58e6c9fc0e73efac9c700fd5116fa5b'
+    )
+    if (!res.ok) {
+      throw new Error('сервер не ответил: ', res.status)
     }
+    const body = await res.json()
+    return body.guest_session_id
+  }
+
+  async getGenres() {
+    const res = await fetch(
+      'https://api.themoviedb.org/3/genre/movie/list?api_key=a58e6c9fc0e73efac9c700fd5116fa5b&language=en'
+    )
+    if (!res.ok) {
+      throw new Error('сервер не ответил: ', res)
+    }
+    const body = await res.json()
+
+    return body
   }
 
   async addRating(filmsId, sessionId, star) {

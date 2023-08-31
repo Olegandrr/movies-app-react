@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-alert */
-/* eslint-disable react/no-unused-state */
 import { Component } from 'react'
 import { Spin, Row, Pagination, Alert } from 'antd'
 
@@ -9,6 +6,7 @@ import FilmsList from '../FilmsList'
 import SearchFilms from '../SearchFilms'
 import OnlineIndicator from '../OnlineIndicator'
 import TMDBService from '../../services/TMDBService'
+import { GenresFilmsProvider } from '../GenresFilmsContext'
 
 class App extends Component {
   TMDBService = new TMDBService()
@@ -25,13 +23,14 @@ class App extends Component {
     guestSessionId: '',
     isRated: false,
     ratedFilms: new Map(),
+    genresFilms: [],
   }
 
   componentDidMount() {
-    console.log('didMount')
     this.TMDBService.createGuestSession()
-      .then((gSess) => this.setState({ guestSessionId: gSess }))
-      .catch((error) => console.log(error))
+      .then((gSess) => this.setState(() => ({ guestSessionId: gSess })))
+      .then(this.getGenresFilms())
+      .catch(this.onError)
   }
 
   componentDidUpdate(_prevProps, prevState) {
@@ -48,8 +47,8 @@ class App extends Component {
   }
 
   onMoviesLoaded = (data) => {
-    const { total_results, results, page } = data
-    if (total_results === 0) {
+    const { total_results: totalResults, results, page } = data
+    if (totalResults === 0) {
       this.setState(() => ({
         cards: [],
         noResults: true,
@@ -61,7 +60,7 @@ class App extends Component {
         cards: results,
         loading: false,
         error: false,
-        totalResults: total_results,
+        totalResults,
         noResults: false,
         currentPage: page,
       }))
@@ -75,7 +74,7 @@ class App extends Component {
     }))
   }
 
-  handleSearch = (query, page = 1) => {
+  handleSearch = (query, page) => {
     if (query.trim().length !== 0) {
       this.setState(() => ({
         prevPage: page,
@@ -125,6 +124,16 @@ class App extends Component {
     this.TMDBService.getRating(guestSessionId, page).then((res) => this.onMoviesLoaded(res))
   }
 
+  getGenresFilms = () => {
+    this.TMDBService.getGenres()
+      .then(({ genres }) => {
+        this.setState({
+          genresFilms: genres,
+        })
+      })
+      .catch(this.onError)
+  }
+
   handelChangeStars = (star, id) => {
     const { guestSessionId } = this.state
     this.TMDBService.addRating(id, guestSessionId, star)
@@ -133,79 +142,89 @@ class App extends Component {
           ratedFilms: new Map(ratedFilms.set(id, star)),
         }))
       })
-      .catch((error) => {
-        console.log('Оценить не получилось', error)
-      })
+      .catch(this.onError)
   }
 
   render() {
-    const { cards, loading, error, totalResults, noResults, guestSessionId, isRated, ratedFilms, currentPage } =
-      this.state
+    const {
+      cards,
+      loading,
+      error,
+      totalResults,
+      noResults,
+      guestSessionId,
+      isRated,
+      ratedFilms,
+      currentPage,
+      genresFilms,
+    } = this.state
     return (
       <OnlineIndicator>
-        <div className="wrapper">
-          <Row justify="center">
-            <button
-              className={!isRated ? 'button-tab button-tab__selected' : 'button-tab'}
-              type="button"
-              onClick={this.handleClickRated}
-              name="Search"
-            >
-              Search
-            </button>
+        <GenresFilmsProvider value={genresFilms}>
+          <div className="wrapper">
+            <Row justify="center">
+              <button
+                className={!isRated ? 'button-tab button-tab__selected' : 'button-tab'}
+                type="button"
+                onClick={this.handleClickRated}
+                name="Search"
+              >
+                Search
+              </button>
 
-            <button
-              className={isRated ? 'button-tab button-tab__selected' : 'button-tab'}
-              type="button"
-              onClick={this.handleClickRated}
-              name="Rated"
-            >
-              Rated
-            </button>
-          </Row>
-          <Row justify="center">{!isRated && <SearchFilms handleSearch={this.handleSearch} />}</Row>
-          <Row justify="center">
-            <Alert
-              className={noResults ? 'error' : 'results'}
-              message="Поиск не дал результатов"
-              type="info"
-              showIcon
-            />
-          </Row>
-          <Row justify="center">
-            {error && (
+              <button
+                className={isRated ? 'button-tab button-tab__selected' : 'button-tab'}
+                type="button"
+                onClick={this.handleClickRated}
+                name="Rated"
+              >
+                Rated
+              </button>
+            </Row>
+            <Row justify="center">{!isRated && <SearchFilms handleSearch={this.handleSearch} />}</Row>
+            <Row justify="center">
               <Alert
-                className="error"
-                message="Сервер не отвечает, обновите страницу и повторите попытку"
-                type="error"
+                className={noResults ? 'error' : 'results'}
+                message="Поиск не дал результатов"
+                type="info"
+                showIcon
+              />
+            </Row>
+            <Row justify="center">
+              {error && (
+                <Alert
+                  className="error"
+                  message="Сервер не отвечает, обновите страницу и повторите попытку"
+                  type="error"
+                />
+              )}
+            </Row>
+            <Row justify="center">
+              <Spin className="spiner" spinning={loading} size="large" />
+            </Row>
+            {!loading && totalResults > 0 && (
+              <FilmsList
+                cards={cards}
+                guestSessionId={guestSessionId}
+                isRated={isRated}
+                handelChangeStars={this.handelChangeStars}
+                ratedFilms={ratedFilms}
               />
             )}
-          </Row>
-          <Row justify="center">
-            <Spin className="spiner" spinning={loading} size="large" />
-          </Row>
-          {!loading && totalResults > 0 && (
-            <FilmsList
-              cards={cards}
-              guestSessionId={guestSessionId}
-              isRated={isRated}
-              handelChangeStars={this.handelChangeStars}
-              ratedFilms={ratedFilms}
-            />
-          )}
-          <Row justify="center">
-            {totalResults > 0 && !loading ? (
-              <Pagination
-                current={currentPage}
-                defaultCurrent={currentPage}
-                total={totalResults}
-                onChange={this.handlePageChange}
-                defaultPageSize={20}
-                showSizeChanger={false}
-              />
-            ) : null}
-          </Row>
-        </div>
+            <Row justify="center">
+              {totalResults > 0 && !loading ? (
+                <Pagination
+                  current={currentPage}
+                  defaultCurrent={currentPage}
+                  total={totalResults}
+                  onChange={this.handlePageChange}
+                  defaultPageSize={20}
+                  showSizeChanger={false}
+                />
+              ) : null}
+            </Row>
+          </div>
+        </GenresFilmsProvider>
       </OnlineIndicator>
     )
   }

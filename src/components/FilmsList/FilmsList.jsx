@@ -11,7 +11,6 @@ import './FilmsList.css'
 class FilmsList extends Component {
   render() {
     const { cards, guestSessionId, handelChangeStars, ratedFilms } = this.props
-    // console.log(this.props)
     return (
       <div className="filmsListWrapper">
         <Row className="row" gutter={[0, 32]} justify="space-between">
@@ -24,7 +23,7 @@ class FilmsList extends Component {
               title={item.title}
               description={item.overview}
               date={item.release_date ? format(new Date(item.release_date), 'MMMM d, yyyy') : 'No release date'}
-              genre="Drama"
+              genre={item.genre_ids}
               rating={item.vote_average.toFixed(1)}
               img={item.poster_path}
               handelChangeStars={(star) => handelChangeStars(star, item.id)}

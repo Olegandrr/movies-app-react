@@ -1,6 +1,8 @@
 import { Layout, Col, Rate } from 'antd'
 import { Component } from 'react'
 
+import FilmGenre from '../FilmGenre'
+
 import './FilmCard.css'
 
 const { Header, Footer, Sider, Content } = Layout
@@ -8,9 +10,9 @@ const { Header, Footer, Sider, Content } = Layout
 class FilmCard extends Component {
   cropDescription = () => {
     const { description } = this.props
-    if (description.length > 218) {
-      const descItog = description.substr(0, 218)
-      return `${descItog.substr(0, descItog.lastIndexOf(' '))} ...`
+    if (description.length > 205) {
+      const descTotal = description.substr(0, 205)
+      return `${descTotal.substr(0, descTotal.lastIndexOf(' '))} ...`
     }
     return description
   }
@@ -27,7 +29,7 @@ class FilmCard extends Component {
   render() {
     const { title, date, genre, rating, img, stars, handelChangeStars } = this.props
     return (
-      <Col span={12} className="card">
+      <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 12 }} className="card">
         <Layout className="layout">
           <Sider className="siderStyle">
             <img
@@ -42,14 +44,14 @@ class FilmCard extends Component {
           </Sider>
           <Layout>
             <Header className="headerStyle">
-              <div className={title.length > 23 ? 'titleLongStyle' : ''}>{title}</div>
+              <div className={title.length > 20 ? 'titleLongStyle' : ''}>{title}</div>
               <div style={{ border: `2px solid ${this.borderColor()}` }} className="rating">
                 {rating}
               </div>
             </Header>
             <Content className="contentStyle">
               <div className="date">{date}</div>
-              <div className="genre">{genre}</div>
+              <FilmGenre genre={genre} />
               <div className="description">{this.cropDescription()}</div>
             </Content>
             <Footer className="footerStyle">
