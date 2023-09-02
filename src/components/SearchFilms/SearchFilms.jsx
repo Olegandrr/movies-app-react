@@ -26,6 +26,7 @@ class SearchFilms extends Component {
         value={query}
         onChange={this.handleInputChange}
         onKeyDown={this.handleKeyPress}
+        autoFocus
       />
     )
   }

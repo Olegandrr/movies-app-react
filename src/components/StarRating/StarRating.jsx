@@ -1,45 +1,30 @@
-/* eslint-disable react/destructuring-assignment */
-import { Component } from 'react'
-import { Rate } from 'antd'
-
-import TMDBService from '../../services/TMDBService'
+import { Row, Col, Rate } from 'antd'
+import PropTypes from 'prop-types'
 import './StarRating.css'
 
-class StarRating extends Component {
-  TMDBService = new TMDBService()
+function StarRating({ handelChangeStars, stars }) {
+  return (
+    <Row className="stars-wrapper" align="bottom">
+      <Col xs={{ span: 18, push: 6 }} sm={{ span: 17, push: 6 }} md={{ span: 13, push: 11 }}>
+        <Rate
+          className="star__size "
+          count={10}
+          allowHalf
+          onChange={handelChangeStars}
+          value={stars}
+          allowClear={false}
+        />
+      </Col>
+    </Row>
+  )
+}
 
-  state = {
-    choiceStar: this.props.stars,
-  }
+StarRating.defaultProps = {
+  stars: 0,
+}
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.stars !== this.props.stars) {
-      this.setState({ choiceStar: this.props.stars })
-    }
-  }
-
-  handelChangeStars = (star) => {
-    const { id, guestSessionId } = this.props
-    this.TMDBService.addRating(id, guestSessionId, star).then((x) =>
-      x.success
-        ? this.setState({ choiceStar: star })
-        : new Error('Оценить не получилось').catch((e) => console.log('Оценить не получилось', e))
-    )
-  }
-
-  render() {
-    const { choiceStar } = this.state
-    return (
-      <Rate
-        className="star__size "
-        count={10}
-        allowHalf
-        onChange={this.handelChangeStars}
-        value={choiceStar}
-        allowClear={false}
-      />
-    )
-  }
+StarRating.propTypes = {
+  stars: PropTypes.number,
 }
 
 export default StarRating

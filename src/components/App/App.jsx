@@ -18,8 +18,7 @@ class App extends Component {
     currentPage: 0,
     prevPage: 1,
     currentQuery: '',
-    totalResults: 0,
-    noResults: false,
+    totalResults: null,
     guestSessionId: '',
     isRated: false,
     ratedFilms: new Map(),
@@ -34,16 +33,46 @@ class App extends Component {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const { isRated, prevPage, currentPage } = this.state
+    const { isRated, prevPage, currentPage, currentQuery } = this.state
     if (prevState.isRated !== isRated) {
       if (isRated) {
         this.getRatedFilmsFromApi(currentPage)
       } else if (!isRated) {
-        this.setState(() => ({
-          currentPage: prevPage,
-        }))
+        this.handleSearch(currentQuery, prevPage)
       }
     }
+  }
+
+  getGenresFilms = () => {
+    this.TMDBService.getGenres()
+      .then(({ genres }) => {
+        this.setState({
+          genresFilms: genres,
+        })
+      })
+      .catch(this.onError)
+  }
+
+  handleSearch = (query, page) => {
+    if (query.trim().length !== 0) {
+      this.setState(() => ({
+        prevPage: page,
+        currentQuery: query,
+        loading: true,
+      }))
+      this.TMDBService.getMovies(query, page)
+        .then((data) => {
+          this.onMoviesLoaded(data)
+        })
+        .catch(this.onError)
+    }
+  }
+
+  getRatedFilmsFromApi = (page) => {
+    const { guestSessionId } = this.state
+    this.TMDBService.getRating(guestSessionId, page)
+      .then((data) => this.onMoviesLoaded(data))
+      .catch(this.onError)
   }
 
   onMoviesLoaded = (data) => {
@@ -51,7 +80,7 @@ class App extends Component {
     if (totalResults === 0) {
       this.setState(() => ({
         cards: [],
-        noResults: true,
+
         loading: false,
         totalResults: 0,
       }))
@@ -61,7 +90,7 @@ class App extends Component {
         loading: false,
         error: false,
         totalResults,
-        noResults: false,
+
         currentPage: page,
       }))
     }
@@ -72,22 +101,6 @@ class App extends Component {
       error: true,
       loading: false,
     }))
-  }
-
-  handleSearch = (query, page) => {
-    if (query.trim().length !== 0) {
-      this.setState(() => ({
-        prevPage: page,
-        currentQuery: query,
-        loading: true,
-        noResults: false,
-      }))
-      this.TMDBService.getMovies(query, page)
-        .then((data) => {
-          this.onMoviesLoaded(data)
-        })
-        .catch(this.onError)
-    }
   }
 
   handlePageChange = (page) => {
@@ -102,36 +115,20 @@ class App extends Component {
   }
 
   handleClickRated = (e) => {
-    const { currentQuery, prevPage } = this.state
+    const { prevPage } = this.state
     const { name } = e.target
     if (name === 'Search') {
       this.setState(() => ({
         isRated: false,
         currentPage: prevPage,
-        noResults: false,
+        totalResults: null,
       }))
-      this.handleSearch(currentQuery, prevPage)
     } else if (name === 'Rated') {
       this.setState(() => ({
         isRated: true,
         currentPage: 1,
       }))
     }
-  }
-
-  getRatedFilmsFromApi = (page) => {
-    const { guestSessionId } = this.state
-    this.TMDBService.getRating(guestSessionId, page).then((res) => this.onMoviesLoaded(res))
-  }
-
-  getGenresFilms = () => {
-    this.TMDBService.getGenres()
-      .then(({ genres }) => {
-        this.setState({
-          genresFilms: genres,
-        })
-      })
-      .catch(this.onError)
   }
 
   handelChangeStars = (star, id) => {
@@ -146,27 +143,17 @@ class App extends Component {
   }
 
   render() {
-    const {
-      cards,
-      loading,
-      error,
-      totalResults,
-      noResults,
-      guestSessionId,
-      isRated,
-      ratedFilms,
-      currentPage,
-      genresFilms,
-    } = this.state
+    const { cards, loading, error, totalResults, isRated, ratedFilms, currentPage, genresFilms } = this.state
 
     const renderCondition = !loading && totalResults > 0
+    const selectedButton = 'button-tab button-tab__selected'
     return (
       <OnlineIndicator>
         <GenresFilmsProvider value={genresFilms}>
           <div className="wrapper">
             <Row justify="center">
               <button
-                className={!isRated ? 'button-tab button-tab__selected' : 'button-tab'}
+                className={!isRated ? selectedButton : 'button-tab'}
                 type="button"
                 onClick={this.handleClickRated}
                 name="Search"
@@ -175,7 +162,7 @@ class App extends Component {
               </button>
 
               <button
-                className={isRated ? 'button-tab button-tab__selected' : 'button-tab'}
+                className={isRated ? selectedButton : 'button-tab'}
                 type="button"
                 onClick={this.handleClickRated}
                 name="Rated"
@@ -185,25 +172,14 @@ class App extends Component {
             </Row>
             <Row justify="center">{!isRated && <SearchFilms handleSearch={this.handleSearch} />}</Row>
             <Row justify="center">
-              <Alert
-                className={noResults ? 'error' : 'results'}
-                message="Поиск не дал результатов"
-                type="info"
-                showIcon
-              />
+              {totalResults === 0 && <Alert className="error" message="Поиск не дал результатов" type="info" />}
             </Row>
             <Row justify="center">{error && <Alert className="error" message="Сервер не отвечает" type="error" />}</Row>
             <Row justify="center">
               <Spin className="spiner" spinning={loading} size="large" />
             </Row>
             {renderCondition && (
-              <FilmsList
-                cards={cards}
-                guestSessionId={guestSessionId}
-                isRated={isRated}
-                handelChangeStars={this.handelChangeStars}
-                ratedFilms={ratedFilms}
-              />
+              <FilmsList cards={cards} handelChangeStars={this.handelChangeStars} ratedFilms={ratedFilms} />
             )}
             <Row justify="center">
               {renderCondition && (
