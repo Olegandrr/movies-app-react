@@ -1,63 +1,66 @@
 .card {
   max-width: 454px;
-  max-height: 281px;
+  height: 281px;
   box-shadow: 0px 4px 12px 0px #00000026;
   border-radius: 0px;
-  background-color: #fff !important;
+  background-color: #fff;
+  position: relative;
+  
 }
 
-.headerStyle {
-  display: flex;
+.description-area {
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.title-rating__size {
+  height: 40px;
   color: black;
-  background-color: #fff !important;
+  font-weight: 500;
   font-family: Inter UI;
   font-size: 20px;
   line-height: 28px;
   letter-spacing: 0em;
   text-align: left;
-  padding-left: 0px;
-  padding-right: 10px;
-  justify-content: space-between;
-  align-items: center;
-  height: 45px;
+  
+
+
 }
 
-.titleLongStyle {
-  font-size: 16px;
-  line-height: 18px;
+.title-long_fonts {
+  font-size: 14px;
+  line-height: 14px;
   letter-spacing: 0px;
   font-weight: 500;
-  flex-shrink: 1;
+
 }
 
 .rating {
-  height: 30px;
-  min-width: 30px;
+  max-height: 30px;
+  max-width: 30px;
   border-radius: 50%;
-  border: 2px solid #e9d100;
   font-family: Inter UI;
   font-size: 12px;
   line-height: 24px;
   letter-spacing: 0px;
   text-align: center;
-  flex-shrink: 1;
+  margin: auto 0;
+  padding: 0;
 }
 
-.contentStyle {
-  background-color: #fff;
-}
+
 
 .description {
-  height: 129px;
-  max-width: 228px;
+  height: 120px;
   color: #000;
   font-family: Inter UI;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  padding-top: 5px;
-  background-color: #fff !important;
+  padding: 10px 10px 0 0;
+  flex: 1;
+  
 }
 
 .date {
@@ -67,31 +70,49 @@
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  background-color: #fff !important;
   padding-bottom: 5px;
 }
-.siderStyle {
-  background-color: #fff !important;
-  height: 281px;
-  max-width: 183px;
-}
 
-.filmCardImage {
+
+
+.films-poster-img {
+  position: absolute;
   height: 100%;
   max-width: 183px;
   object-fit: contain;
-  background-color: #fff !important;
+  
 }
 
-.footerStyle {
-  min-height: 46px;
-  max-width: 100%;
-  text-align: left;
-  background-color: #fff;
-  padding: 0;
-  margin-bottom: 2px;
+.stars-wrapper {
+  margin-top: auto;
+  margin-bottom: 5px;
+  
+  height: 45px;
 }
 
 .star__size {
-  font-size: 15px;
+  font-size: 16px;
+
+  
+  
+}
+
+@media (max-width: 768px) {
+  .card {
+    height: 245px;
+  }
+  .films-poster-img {
+    height: 91px;
+    width: 60px;
+    object-fit: contain;
+    top: 6px;
+    left: 10px;
+    
+  }
+  .description {
+    height: 90px;
+    max-width: 100%;
+    margin-left: 10px;
+    
+  }
 }

@@ -158,6 +158,8 @@ class App extends Component {
       currentPage,
       genresFilms,
     } = this.state
+
+    const renderCondition = !loading && totalResults > 0
     return (
       <OnlineIndicator>
         <GenresFilmsProvider value={genresFilms}>
@@ -190,19 +192,11 @@ class App extends Component {
                 showIcon
               />
             </Row>
-            <Row justify="center">
-              {error && (
-                <Alert
-                  className="error"
-                  message="Сервер не отвечает, обновите страницу и повторите попытку"
-                  type="error"
-                />
-              )}
-            </Row>
+            <Row justify="center">{error && <Alert className="error" message="Сервер не отвечает" type="error" />}</Row>
             <Row justify="center">
               <Spin className="spiner" spinning={loading} size="large" />
             </Row>
-            {!loading && totalResults > 0 && (
+            {renderCondition && (
               <FilmsList
                 cards={cards}
                 guestSessionId={guestSessionId}
@@ -212,7 +206,7 @@ class App extends Component {
               />
             )}
             <Row justify="center">
-              {totalResults > 0 && !loading ? (
+              {renderCondition && (
                 <Pagination
                   current={currentPage}
                   defaultCurrent={currentPage}
@@ -221,7 +215,7 @@ class App extends Component {
                   defaultPageSize={20}
                   showSizeChanger={false}
                 />
-              ) : null}
+              )}
             </Row>
           </div>
         </GenresFilmsProvider>
