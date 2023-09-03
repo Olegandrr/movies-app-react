@@ -4,11 +4,8 @@ import { Alert } from 'antd'
 import './OnlineIndicator.css'
 
 class OnlineIndicator extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isConnected: true,
-    }
+  state = {
+    isConnected: true,
   }
 
   componentDidMount() {
@@ -34,7 +31,7 @@ class OnlineIndicator extends Component {
     const { children } = this.props
 
     return (
-      <div>{isConnected ? children : <Alert className="offline" message="Нет подключения к сети" type="error" />}</div>
+      <div>{isConnected ? children : <Alert className="error" message="Нет подключения к сети" type="error" />}</div>
     )
   }
 }

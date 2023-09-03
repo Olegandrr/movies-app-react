@@ -7,7 +7,7 @@ import './FilmsList.css'
 
 function FilmsList({ cards, handelChangeStars, ratedFilms }) {
   return (
-    <div className="filmsListWrapper">
+    <div className="film-list-wrapper">
       <Row className="row" gutter={[0, 32]} justify="space-between">
         {cards.map((item) => (
           <FilmCard

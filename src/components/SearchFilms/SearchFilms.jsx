@@ -13,8 +13,8 @@ class SearchFilms extends Component {
     handleSearch(query, 1)
   }, 1500)
 
-  handleInputChange = (event) => {
-    this.setState({ query: event.target.value })
+  handleInputChange = (e) => {
+    this.setState({ query: e.target.value })
   }
 
   render() {

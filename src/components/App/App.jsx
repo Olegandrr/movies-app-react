@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Spin, Row, Pagination, Alert } from 'antd'
+import { Spin, Pagination, Alert } from 'antd'
 
 import './App.css'
 import FilmsList from '../FilmsList'
@@ -7,6 +7,7 @@ import SearchFilms from '../SearchFilms'
 import OnlineIndicator from '../OnlineIndicator'
 import TMDBService from '../../services/TMDBService'
 import { GenresFilmsProvider } from '../GenresFilmsContext'
+import TabSwitch from '../TabSwitch'
 
 class App extends Component {
   TMDBService = new TMDBService()
@@ -80,7 +81,6 @@ class App extends Component {
     if (totalResults === 0) {
       this.setState(() => ({
         cards: [],
-
         loading: false,
         totalResults: 0,
       }))
@@ -90,7 +90,6 @@ class App extends Component {
         loading: false,
         error: false,
         totalResults,
-
         currentPage: page,
       }))
     }
@@ -143,47 +142,23 @@ class App extends Component {
   }
 
   render() {
-    const { cards, loading, error, totalResults, isRated, ratedFilms, currentPage, genresFilms } = this.state
-
+    const { cards, loading, error, totalResults, ratedFilms, currentPage, genresFilms } = this.state
     const renderCondition = !loading && totalResults > 0
-    const selectedButton = 'button-tab button-tab__selected'
     return (
       <OnlineIndicator>
         <GenresFilmsProvider value={genresFilms}>
           <div className="wrapper">
-            <Row justify="center">
-              <button
-                className={!isRated ? selectedButton : 'button-tab'}
-                type="button"
-                onClick={this.handleClickRated}
-                name="Search"
-              >
-                Search
-              </button>
-
-              <button
-                className={isRated ? selectedButton : 'button-tab'}
-                type="button"
-                onClick={this.handleClickRated}
-                name="Rated"
-              >
-                Rated
-              </button>
-            </Row>
-            <Row justify="center">{!isRated && <SearchFilms handleSearch={this.handleSearch} />}</Row>
-            <Row justify="center">
-              {totalResults === 0 && <Alert className="error" message="Поиск не дал результатов" type="info" />}
-            </Row>
-            <Row justify="center">{error && <Alert className="error" message="Сервер не отвечает" type="error" />}</Row>
-            <Row justify="center">
+            <TabSwitch handleClickRated={(e) => this.handleClickRated(e)}>
+              <SearchFilms handleSearch={this.handleSearch} />
+              {totalResults === 0 && <Alert className="error" message="Не найдено" type="info" />}
+              {error && <Alert className="error" message="Сервер не отвечает" type="error" />}
               <Spin className="spiner" spinning={loading} size="large" />
-            </Row>
-            {renderCondition && (
-              <FilmsList cards={cards} handelChangeStars={this.handelChangeStars} ratedFilms={ratedFilms} />
-            )}
-            <Row justify="center">
+              {renderCondition && (
+                <FilmsList cards={cards} handelChangeStars={this.handelChangeStars} ratedFilms={ratedFilms} />
+              )}
               {renderCondition && (
                 <Pagination
+                  className="paginator"
                   current={currentPage}
                   defaultCurrent={currentPage}
                   total={totalResults}
@@ -192,7 +167,7 @@ class App extends Component {
                   showSizeChanger={false}
                 />
               )}
-            </Row>
+            </TabSwitch>
           </div>
         </GenresFilmsProvider>
       </OnlineIndicator>

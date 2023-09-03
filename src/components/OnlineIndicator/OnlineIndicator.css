@@ -1,6 +1,5 @@
-.offline {
-  margin: 5%;
+.error {
   font-weight: 600;
-  font-size: large;
+  margin-top: 10px;
   text-align: center;
 }
